@@ -1,6 +1,6 @@
-namespace api.Interfaces
+namespace api.Interfaces.Message
 {
-    public interface SendMessage
+    public interface ISendMessage
     {
         void Send(string id, string body, Uri? media = null);       
     } 

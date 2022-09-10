@@ -1,62 +1,96 @@
-using api.Interfaces;
+using api.Interfaces.Message;
+using api.Interfaces.Data;
 using api.Models;
+using api.Services;
 
 namespace api.Business
 {
     public class MessageProcessor
     {
-        private SendMessage _sendMessage { get; set; }
+        private readonly ISendMessage _sendMessage;
+        private readonly Message _message;
+        private readonly TranslateAnswer _translator;
+        private readonly IChatDatabase _database;
 
-        public MessageProcessor(SendMessage sendMessage)
+        public MessageProcessor(ISendMessage sendMessage, Message message)
         {
             _sendMessage = sendMessage;
+            _message = message;
+            _translator = new TranslateAnswer();
+            _database = new ChatDatabase();
         }
 
-        public async Task Process(Message message)
+        public async Task Process()
         {
-            var peopleStatus = await VerifyPeopleStatus(message.Id);
+            var peopleStatus = await VerifyPeopleStatus(_message.Id);
 
             if (peopleStatus == PeopleStatus.InitConversation)
-                await InitConversation(message);
+                await InitConversation();
             else 
-                await ContinueConversation(message, peopleStatus);
+                await ContinueConversation(peopleStatus);
             
         }
 
-        public async Task<PeopleStatus> VerifyPeopleStatus(string id)
+        private async Task<PeopleStatus> VerifyPeopleStatus(string id)
         {
+            //int? iResult = await _database.GetStatus(id);
+
+            //if (iResult.HasValue)
+            //    return (PeopleStatus)iResult.Value;
+
             return PeopleStatus.InitConversation;
         }
 
-        public async Task InitConversation(Message message)
+        private async Task InitConversation()
         {
-            // insere no banco a mensagem
+            string message = string.Format(Messages.StartMessage, _message.UserName);
 
-            // insere no banco o status 
+            // var history = new ConversationHistory() {
+            //     From = "server",
+            //     Body = message
+            // };
+
+            // new List<ConversationHistory>().Add(history);
+
+            // // insere no banco o status 
+            // await _database.AddStatus(_message.Id, PeopleStatus.WaitingChoseFunction, Plataform.WHATSAPP, "");
 
             // envia a mensagem inicial
-            _sendMessage.Send(message.Id, $"Olá {message.UserName} 😊\nO que deseja fazer agora??\n\nTemos duas opções até o momento:\n\n1 - Procurar onde assistir o filme\n2 - Descobrir um filme novo para assistir\n");
+            _sendMessage.Send(_message.Id, message);
         }
 
-        public async Task ContinueConversation(Message message, PeopleStatus peopleStatus)
+        private async Task ContinueConversation(PeopleStatus peopleStatus)
         {
             switch (peopleStatus)
             {
                 case PeopleStatus.WaitingChoseFunction:
+                    await DetectDecisionAndContinue();
+                    break;
+                case PeopleStatus.WaintingWriteMovieToFind:
+                    await FindMovie();
+                    break;
+                case PeopleStatus.WaitingAnswerQuestion:
+                    await ContinueDiscover();
                     break;
                 default:
+                    _sendMessage.Send(_message.Id, "Ops, não consegui entender sua respota. Poderia reformular ela?🤔");
                     break;
             }
         }
 
-        public async Task FindMovie(string movie)
+        private async Task DetectDecisionAndContinue()
         {
-
+            await _database.GetConversation(_message.Id);
         }
 
-        public async Task ContinueAskMovieTypes()
+        private async Task FindMovie()
         {
+            await _database.GetConversation(_message.Id);
+        }
 
+        private async Task ContinueDiscover()
+        {
+            await _database.GetConversation(_message.Id);
         }
     }
 }

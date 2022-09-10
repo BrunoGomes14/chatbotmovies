@@ -1,19 +1,21 @@
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
+using api.Models;
+using api.Services;
 
-namespace api.Interfaces
+namespace api.Interfaces.Message
 {
-    public class WhatsappSendMessage : SendMessage
+    public class WhatsappSendMessage : ISendMessage
     {
         private readonly string AccountSid;
         private readonly string AuthToken;
         private readonly string FromNumber;
-
-        public WhatsappSendMessage()
+    
+        public WhatsappSendMessage(TwilioConfig config)
         {
-            AccountSid = "AC08e0fd6a0434d2da233bd0860ad8d169";
-            AuthToken = "7eb4f3f5d9c79c919eb9428110cacd06";
-            FromNumber =  "whatsapp:+14155238886";
+            AccountSid = config.Sid.FromBase64();
+            AuthToken = config.Token.FromBase64();
+            FromNumber =  config.Number;
 
             TwilioClient.Init(AccountSid, AuthToken);
         }
