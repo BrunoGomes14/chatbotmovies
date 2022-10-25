@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using RabbitMQ.Client;
-using System.Text.Json;
-using Twilio;
-using Twilio.AspNet.Mvc;
 using api.Interfaces.Message;
 using api.Business;
+using api.Services;
+using System.Globalization;
 
 namespace api.Controllers;
 
@@ -13,22 +11,46 @@ namespace api.Controllers;
 public class WhatsappReceiverController : ControllerBase
 {
     private readonly WhatsappSendMessage _sendmessage;
+    private readonly MessageProcessor _messageProcessor;
+    private readonly GetNearestTheater getNearestTheater;
+    private GetMoviesInfo getMoviesInfo;
 
-    public WhatsappReceiverController(WhatsappSendMessage sendmessage)
+    public WhatsappReceiverController(
+        MessageProcessor messageProcessor,
+        GetNearestTheater getNearestTheater,
+        WhatsappSendMessage sendmessage,
+        GetMoviesInfo getMoviesInfo)
     {
         _sendmessage = sendmessage;
+        _messageProcessor = messageProcessor;
+        this.getNearestTheater = getNearestTheater;
+        this.getMoviesInfo = getMoviesInfo;
     }
 
     [HttpPost]
     public async Task<ActionResult> ReceiveMessage([FromForm] Models.WhatsappMessage receive)
     {
-        var message = new Models.Message {
-            Id = receive.From, 
-            Content = receive.Body
-            , UserName = receive.ProfileName
-        };
+        _messageProcessor.Setup(
+            _sendmessage,
+            new Models.Message
+            {
+                Id = receive.From,
+                Content = receive.Body,
+                UserName = receive.ProfileName,
+                Latitude = Convert.ToDecimal(receive.Latitude ?? "0", new CultureInfo("en-US")),
+                Longitude = Convert.ToDecimal(receive.Longitude ?? "0", new CultureInfo("en-US")),
+            });
 
-        await new MessageProcessor(_sendmessage, message).Process();
+        await _messageProcessor.Process();
+
         return Ok();
     }
+
+    [HttpPost("test")]
+    public async Task<ActionResult> test()
+    {
+        await getMoviesInfo.GetMovie(354912);
+        return Ok();
+    }
+
 }

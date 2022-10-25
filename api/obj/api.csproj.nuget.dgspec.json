@@ -44,9 +44,21 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[6.0.8, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
             "RabbitMQ.Client": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "Refit.HttpClientFactory": {
+              "target": "Package",
+              "version": "[6.3.2, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -55,10 +67,6 @@
             "Twilio": {
               "target": "Package",
               "version": "[5.79.0, )"
-            },
-            "Twilio.AspNet.Mvc": {
-              "target": "Package",
-              "version": "[6.0.0, )"
             }
           },
           "imports": [

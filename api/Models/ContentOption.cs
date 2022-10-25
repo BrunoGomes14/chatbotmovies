@@ -9,5 +9,6 @@ namespace api.Models
 
         public List<string> VerbsOptions { get; set; }
         public int NumberOption { get; set; }
+        public List<string>? Substantive { get; set; }
     }
 }
