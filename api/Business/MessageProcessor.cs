@@ -33,6 +33,8 @@ namespace api.Business
         {
             _sendMessage = sendMessage;
             _message = message;
+
+            _translator.Setup(_message.Content!);
         }
 
         public async Task Process()
@@ -51,7 +53,7 @@ namespace api.Business
                 await _database.UpdateStatus(_message.Id, peopleStatus);
                 _sendMessage.Send(_message.Id, ex.Reason ?? Messages.NotUnderstand);
             }
-            catch (Exception)
+            catch (Exception err)
             {
                 await _database.UpdateStatus(_message.Id, peopleStatus);
                 _sendMessage.Send(_message.Id, Messages.Error);
@@ -83,21 +85,12 @@ namespace api.Business
         private async Task InitConversation(PeopleStatus status)
         {
             string message = string.Format(
-                status == PeopleStatus.InitConversation ? Messages.StartMessage : Messages.StartMessage,
+                status == PeopleStatus.InitConversation
+                ? Messages.StartMessage
+                : Messages.RestartMessage,
                 _message.UserName);
 
-            var history = new ConversationHistory() {
-                From = "server",
-                Sent = message
-            };
-
-            var list = new List<ConversationHistory>();
-            list.Add(history);
-
-            // insere no banco o status 
             await _database.AddStatus(_message.Id, PeopleStatus.WaitingChoseFunction, Plataform.WHATSAPP);
-
-            // envia a mensagem inicial
             _sendMessage.Send(_message.Id, message);
         }
 
@@ -125,9 +118,8 @@ namespace api.Business
                 case PeopleStatus.WaitingChoseFunctionAfterMovie:
                     DetectDecisionAndContinueAfterMovie();
                     break;
-                case PeopleStatus.WatingDecideAfterFindLocation:
-                    break;
                 default:
+                    await VerifyHowProcede();
                     break;
             }
 
@@ -137,10 +129,7 @@ namespace api.Business
 
         private async Task<string> DetectDecisionAndContinue()
         {
-            var option = _translator.ToListOption(_message.Content!, TranslationOptions.ChooseFuncOptions());
-
-            if (option == TranslateAnswer.NotFound)
-                throw new NotUnderstandException();
+            var option = _translator.ToListOption(TranslationOptions.ChooseFuncOptions());
 
             switch (option)
             {
@@ -151,8 +140,11 @@ namespace api.Business
                     await _database.UpdateStatus(_message.Id, PeopleStatus.WaitingSendLocation);
                     return Messages.SendLocation;
                 default:
-                    throw new NotUnderstandException();
+                    await AnyTimeDecision(option);
+                    break;
             }
+
+            return string.Empty;
         }
 
         private async Task<(string, Uri)> FindMovie()
@@ -165,7 +157,7 @@ namespace api.Business
 
             var result = await _getMoviesInfo.SearchMovie(content);
             var formatted = _getMoviesInfo.FormatResult(result);
-            var banner = $"https://image.tmdb.org/t/p/w500{result.movie.poster_path}";
+            var banner = $"https://image.tmdb.org/t/p/original{result.movie.poster_path}";
 
             await _database.UpdateStatus(_message.Id, PeopleStatus.WaitingChoseFunctionAfterMovie);
             await _database.InsertResult(_message.Id, result.ToJson(), (int)PeopleStatus.WaintingWriteMovieToFind);
@@ -192,20 +184,61 @@ namespace api.Business
             var theaterResult = await task;
             var formatted = _getNearestTheater.FormatResult(theaterResult);
 
-            _ = Task.Run(async () =>
-            {
-                Thread.Sleep(10);
-                _sendMessage.Send(_message.Id, Messages.MeetMovie);
-                await _database.UpdateStatus(_message.Id, PeopleStatus.WaintingWriteMovieToFind);
-            });
+            _sendMessage.SendAfter(_message.Id, Messages.MeetMovie);
+            await _database.UpdateStatus(_message.Id, PeopleStatus.WaintingWriteMovieToFind);
+
 
             return (formatted, new Uri(theaterResult.Theater.images.First(x => x.type.ToLower() == "logo").url));
         }
 
 
-        public void DetectDecisionAndContinueAfterMovie()
+        private void DetectDecisionAndContinueAfterMovie()
         {
-            var result = _translator.ToListOption(_message.Content, TranslationOptions.ChooseFuncOptionsAfterMovie(), true);
+            var result = _translator.ToListOption(TranslationOptions.ChooseFuncOptionsAfterMovie(), true);
+
+            switch (result)
+            {
+                case 1:
+                    break;
+                default:
+                    AnyTimeDecision(result);
+                    break;
+            }
+        }
+
+        private Task AnyTimeDecision(int decision) => decision switch 
+        {
+            TranslateAnswer.ExitDetected => ExitProcess(),
+            TranslateAnswer.RestartDetected => RestartProcess(),
+            _ => throw new NotUnderstandException(),
+            
+        };
+
+        private async Task ExitProcess()
+        {
+            await _database.UpdateStatus(_message.Id, PeopleStatus.FinishedByUser);
+            _sendMessage.Send(_message.Id, Messages.FinishedByChoice);
+        }
+
+        private async Task RestartProcess(bool sendApologize = false)
+        {
+            if (sendApologize)
+                _sendMessage.Send(_message.Id, Messages.NotUnderstandStatus);
+
+            await _database.UpdateStatus(_message.Id, PeopleStatus.FinishedForRestart);
+
+            if (!sendApologize)
+                await InitConversation(PeopleStatus.RestartConversation);
+        }
+        
+        private async Task VerifyHowProcede()
+        {
+            int decision = _translator.CheckAnyTimeDecision();
+
+            if (decision == TranslateAnswer.NotFound)
+                throw new NotUnderstandException();
+
+            await AnyTimeDecision(decision);
         }
     }
 }

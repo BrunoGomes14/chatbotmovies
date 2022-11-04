@@ -24,44 +24,44 @@ namespace api.Services
 
         public async Task<NearestTheaterResult> Execute(decimal latitude, decimal longitude, string? cep)
         {
-            //GeolocationModel result = new();
-            //if (latitude != 0)
-            //    result = await _geolocationAPI.GetUserLocation(latitude, longitude, _googleKey);
-            //else
-            //    result = await _geolocationAPI.GetUserCepLocation(cep!, _googleKey);
-            //
-            //var state = result.results[0].address_components.First(x => x.types.Contains("administrative_area_level_1"));
-            //var city = result.results[0].address_components.First(x => x.types.Contains("administrative_area_level_2")); ;
-            //latitude = result.results[0].geometry.location.lat;
-            //longitude = result.results[0].geometry.location.lng;
-            //
-            //var cities = await _ingressosAPI.GetCitiesState(state.short_name);
-            //
-            //var ingressoCity = cities.cities.FirstOrDefault(x => x.name.ToLower() == city.long_name.ToLower());
-            //if (ingressoCity == null)
-            //{
-            //    new NearestTheaterResult("Infelizmente, não consegui encontrar cinemas na sua cidade 😢", false);
-            //}
-            //
-            //var theaters = await _ingressosAPI.GetCityTheaters(ingressoCity.id);
-            //var theatersFiltred = theaters.items.Where(x => x.geolocation.lng != 0
-            //                                             && x.enabled);
-            //
-            //GeolocationDistanceModel distance;
-            //foreach (var item in theatersFiltred)
-            //{
-            //    distance = await _geolocationAPI.GetComparation(item.geolocation.lat,
-            //                                                    item.geolocation.lng,
-            //                                                    latitude,
-            //                                                    longitude,
-            //                                                    _googleKey);
-            //    
-            //    item.Distance = distance.rows[0].elements[0].distance.value;
-            //}
-            //
-            //var theaterNear = theatersFiltred.OrderBy(x => x.Distance).ToList()[0];
+            GeolocationModel result = new();
+            if (latitude != 0)
+                result = await _geolocationAPI.GetUserLocation(latitude, longitude, _googleKey);
+            else
+                result = await _geolocationAPI.GetUserCepLocation(cep!, _googleKey);
             
-            var theaterNear = JsonConvert.DeserializeObject<Item>(cinemakSpMarket());
+            var state = result.results[0].address_components.First(x => x.types.Contains("administrative_area_level_1"));
+            var city = result.results[0].address_components.First(x => x.types.Contains("administrative_area_level_2")); ;
+            latitude = result.results[0].geometry.location.lat;
+            longitude = result.results[0].geometry.location.lng;
+            
+            var cities = await _ingressosAPI.GetCitiesState(state.short_name);
+            
+            var ingressoCity = cities.cities.FirstOrDefault(x => x.name.ToLower() == city.long_name.ToLower());
+            if (ingressoCity == null)
+            {
+                new NearestTheaterResult("Infelizmente, não consegui encontrar cinemas na sua cidade 😢", false);
+            }
+            
+            var theaters = await _ingressosAPI.GetCityTheaters(ingressoCity.id);
+            var theatersFiltred = theaters.items.Where(x => x.geolocation.lng != 0
+                                                         && x.enabled);
+            
+            GeolocationDistanceModel distance;
+            foreach (var item in theatersFiltred)
+            {
+                distance = await _geolocationAPI.GetComparation(item.geolocation.lat,
+                                                                item.geolocation.lng,
+                                                                latitude,
+                                                                longitude,
+                                                                _googleKey);
+                
+                item.Distance = distance.rows[0].elements[0].distance.value;
+            }
+            
+            var theaterNear = theatersFiltred.OrderBy(x => x.Distance).ToList()[0];
+            
+            //var theaterNear = JsonConvert.DeserializeObject<Item>(cinemakSpMarket());
             
             var movies = await _ingressosAPI.GetTheaterMovies(theaterNear!.cityId, theaterNear.id);
 

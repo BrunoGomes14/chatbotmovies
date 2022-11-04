@@ -11,8 +11,9 @@ namespace api.Models
         WaitingSendLocation = 5,
         Finished = 6,
         FinishedByApplication = 7,
-        WatingDecideAfterFindLocation = 8,
-        RestartConversation = 9,
-        WaitingChoseFunctionAfterMovie = 10
+        FinishedForRestart = 8,
+        FinishedByUser = 9,
+        RestartConversation = 10,
+        WaitingChoseFunctionAfterMovie = 11
     }
 }

@@ -90,5 +90,21 @@ namespace api.Services
                 return "Ops! Não achei o filme por esse nome, é esse nome mesmo?🧐";
             }
         }
+
+        public static string NotUnderstandStatus
+        {
+            get
+            {
+                return "Minha nossa me perdi aqui 🥴. Infelizmente precisei encerrar nossa conversa.\nFaz o seguinte, me manda uma mensagem para recomeçar e fingir que isso nunca aconteceu rs. ";
+            }
+        }
+
+        public static string FinishedByChoice
+        {
+            get
+            {
+                return "Poxa, tudo bem 🙁. Te espero aqui caso precise.";
+            }
+        }
     }
 }

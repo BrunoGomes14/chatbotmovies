@@ -28,5 +28,10 @@ namespace api.Services
             }
             return sbReturn.ToString();
         }
+
+        public static bool IsBrunoDevelopment(this IWebHostEnvironment environment)
+        {
+            return environment.EnvironmentName == "DevelopmentBruno";
+        }
     }
 }

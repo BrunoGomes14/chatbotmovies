@@ -63,7 +63,11 @@ namespace api.Services
             sb.Append("\n\n");
             
             sb.Append($"🎥*{result.movie.title}*\n");
-            sb.Append(result.movie.overview);
+
+            if (result.movie.overview.Length > 700)
+                sb.Append(result.movie.overview.Substring(0, 700) + "...");
+            else
+                sb.Append(result.movie.overview);
             
             sb.Append($"\n\n⏱ {result.movie.runtime} minutos\n");
             
@@ -74,12 +78,14 @@ namespace api.Services
             sb.Append("🍿*Gêneros*\n");
             result.movie.genres.ForEach(x => sb.Append($"   · {x.name}\n"));
             
-            if (result.stream.results.BR != null && result.stream.results.BR.flatrate.Any())
+            if (result.stream.results.BR != null && result.stream.results.BR.flatrate != null)
             {
                 sb.Append("\n🖥 Disponível nos streams:\n");
                 result.stream.results.BR.flatrate.ForEach(x => sb.Append($"   · {x.provider_name}\n"));
             }
-            
+
+            sb.Length -= 1;
+
             return sb.ToString();
         }
 

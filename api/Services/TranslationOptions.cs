@@ -45,6 +45,12 @@ namespace api.Services
             list.Add(new ContentOption()
             {
                 NumberOption = 2,
+                VerbsOptions = new List<string>() { "adicionar" }
+            });
+
+            list.Add(new ContentOption()
+            {
+                NumberOption = 3,
                 VerbsOptions = new List<string>() { "reiniciar" }
             });
 

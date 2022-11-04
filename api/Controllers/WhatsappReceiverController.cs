@@ -41,6 +41,8 @@ public class WhatsappReceiverController : ControllerBase
                 Longitude = Convert.ToDecimal(receive.Longitude ?? "0", new CultureInfo("en-US")),
             });
 
+        Console.WriteLine($"recebeu: {receive.Body}");
+
         await _messageProcessor.Process();
 
         return Ok();

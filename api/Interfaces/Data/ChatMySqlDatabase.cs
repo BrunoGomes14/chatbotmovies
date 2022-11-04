@@ -1,6 +1,5 @@
 using api.Models;
 using api.Models.Db;
-using System.Data;
 
 namespace api.Interfaces.Data
 {
@@ -30,6 +29,7 @@ namespace api.Interfaces.Data
         {
             return db.Conversations.FirstOrDefault(x => x.PeopleId == id
                                                      && x.Status != (int)PeopleStatus.Finished
+                                                     && x.Status != (int)PeopleStatus.FinishedForRestart
                                                      && x.Status != (int)PeopleStatus.FinishedByApplication);
         }
 
@@ -37,6 +37,7 @@ namespace api.Interfaces.Data
         {
             var model = db.Conversations.FirstOrDefault(x => x.PeopleId == id
                                                           && x.Status != (int)PeopleStatus.Finished
+                                                          && x.Status != (int)PeopleStatus.FinishedForRestart
                                                           && x.Status != (int)PeopleStatus.FinishedByApplication)!;
 
             model.Status = (int)status;
@@ -51,7 +52,6 @@ namespace api.Interfaces.Data
                 FunctionId = functionId,
                 PeopleId = peopleId,
                 Result = result
-                
             });
 
             await db.SaveChangesAsync();

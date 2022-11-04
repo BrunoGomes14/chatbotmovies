@@ -15,7 +15,8 @@ namespace api.Business
 
         public const int NotFound = -1;
         public const int ExitDetected = -2;
-        
+        public const int RestartDetected = -3;
+
         public TranslateAnswer()
         {
             _content = "";
@@ -47,9 +48,19 @@ namespace api.Business
             };
         }
 
-        public int ToListOption(string content, List<ContentOption> options, bool verifyExit = false)
+        public void Setup(string content)
         {
+            if (string.IsNullOrEmpty(content))
+            {
+                content = "";
+                return;
+            }
+
             _content = content.RemoveAccents().ToLower();
+        }
+
+        public int ToListOption(List<ContentOption> options, bool verifyExit = false)
+        {
             _options = options;
 
             if (verifyExit)
@@ -136,11 +147,35 @@ namespace api.Business
             return cep;
         }
 
-        private bool LookForGiveUp()
+        public int CheckAnyTimeDecision()
         {
-            var itens = new List<string>() { "desisto", "finalizar", "sair" };
+            bool result = LookForGiveUp();
 
-            return itens.Contains(_content);
+            if (result)
+                return ExitDetected;
+
+            result = LookForRestart();
+
+            if (result)
+                return RestartDetected;
+
+            return NotFound;
         }
+
+        private bool LookForGiveUp() => 
+            new List<string>() { 
+                "desisto",
+                "finalizar",
+                "sair",
+                "parar"
+            }.Any(x => x == _content);
+
+        private bool LookForRestart() =>
+            new List<string>() {
+                        "comecar de novo",
+                        "re",
+                        "reiniciar",
+                        "restart"
+            }.Any(x => x == _content);
     }
 }
