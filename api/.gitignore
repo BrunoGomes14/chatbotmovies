@@ -458,3 +458,4 @@ $RECYCLE.BIN/
 ## Custom
 ##
 appsettings.DevelopmentBruno.json
+bin/Debug/net6.0
