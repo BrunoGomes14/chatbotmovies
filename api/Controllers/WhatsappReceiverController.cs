@@ -39,7 +39,8 @@ public class WhatsappReceiverController : ControllerBase
                 UserName = receive.ProfileName,
                 Latitude = Convert.ToDecimal(receive.Latitude ?? "0", new CultureInfo("en-US")),
                 Longitude = Convert.ToDecimal(receive.Longitude ?? "0", new CultureInfo("en-US")),
-            });
+            },
+            Models.Plataform.WHATSAPP);
 
         Console.WriteLine($"recebeu: {receive.Body}");
 

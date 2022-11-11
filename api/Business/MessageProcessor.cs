@@ -16,6 +16,7 @@ namespace api.Business
 
         private Message _message;
         private ISendMessage _sendMessage;
+        private Plataform _plataform;
 
         public MessageProcessor(
             IChatDatabase database,
@@ -29,10 +30,11 @@ namespace api.Business
             _getMoviesInfo = getMoviesInfo;
         }
 
-        public void Setup(ISendMessage sendMessage, Message message)
+        public void Setup(ISendMessage sendMessage, Message message, Plataform plataform)
         {
             _sendMessage = sendMessage;
             _message = message;
+            _plataform = plataform;
 
             _translator.Setup(_message.Content!);
         }
@@ -90,7 +92,7 @@ namespace api.Business
                 : Messages.RestartMessage,
                 _message.UserName);
 
-            await _database.AddStatus(_message.Id, PeopleStatus.WaitingChoseFunction, Plataform.WHATSAPP);
+            await _database.AddStatus(_message.Id, PeopleStatus.WaitingChoseFunction, _plataform);
             _sendMessage.Send(_message.Id, message);
         }
 

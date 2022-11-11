@@ -28,13 +28,14 @@ namespace api.Services
         public async Task onMessage()
         {
             _messageProcessor.Setup(
-            _sendMessage,
-            new Models.Message
-            {
-                Id = "",
-                Content = "",
-                UserName = ""
-            });
+                _sendMessage,
+                new Models.Message
+                {
+                    Id = "",
+                    Content = "", 
+                    UserName = ""
+                },
+                Models.Plataform.TELEGRAM);
 
             await _messageProcessor.Process();
         }
