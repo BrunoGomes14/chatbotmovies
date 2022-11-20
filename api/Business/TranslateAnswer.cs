@@ -68,6 +68,11 @@ namespace api.Business
                 verifyExit = LookForGiveUp();
                 if (verifyExit)
                     return ExitDetected;
+
+                verifyExit = LookForRestart();
+                if (verifyExit)
+                    return RestartDetected;
+
             }
 
             int digit = LookForDigit();

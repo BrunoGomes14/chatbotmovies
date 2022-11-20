@@ -18,7 +18,7 @@ namespace api.Services
             list.Add(new ContentOption()
             {
                 NumberOption = 2,
-                VerbsOptions = new List<string>() { "descobrir" }
+                VerbsOptions = new List<string>() { "sortear", "descobrir" }
             });
 
             list.Add(new ContentOption()
@@ -56,5 +56,20 @@ namespace api.Services
 
             return list;
         }
+
+        public static List<ContentOption> ChooseFuncOptionsSortMovie() =>
+            new()
+            {
+                new()
+                {
+                    NumberOption = 1,
+                    VerbsOptions = new List<string>() { "sim", "bora", "fechou", "quero" }
+                },
+                new()
+                {
+                    NumberOption = 2,
+                    VerbsOptions = new List<string>() { "nao" }
+                }
+            };
     }
 }

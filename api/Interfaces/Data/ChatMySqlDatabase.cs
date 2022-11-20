@@ -30,7 +30,8 @@ namespace api.Interfaces.Data
             return db.Conversations.FirstOrDefault(x => x.PeopleId == id
                                                      && x.Status != (int)PeopleStatus.Finished
                                                      && x.Status != (int)PeopleStatus.FinishedForRestart
-                                                     && x.Status != (int)PeopleStatus.FinishedByApplication);
+                                                     && x.Status != (int)PeopleStatus.FinishedByApplication
+                                                     && x.Status != (int)PeopleStatus.FinishedByUser);
         }
 
         public async Task UpdateStatus(string id, PeopleStatus status)

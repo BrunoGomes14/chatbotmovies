@@ -15,7 +15,7 @@ namespace api.Interfaces.Message
     
         public WhatsappSendMessage(AppSettings config)
         {
-            AccountSid = config.TwilioConfig.Sid.FromBase64();
+            AccountSid = config.TwilioConfig!.Sid.FromBase64();
             AuthToken = config.TwilioConfig.Token.FromBase64();
             FromNumber =  config.TwilioConfig.Number;
             AfterMessages = new();

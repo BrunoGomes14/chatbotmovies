@@ -2,8 +2,8 @@
 {
     public class TmdbMovieResult
     {
-        public TmdbMovie movie { get; set; }
-        public TmdbStream stream { get; set; }
-        public bool isTrust { get; set; }
+        public TmdbMovie movie { get; set; } = default!;
+        public TmdbStream stream { get; set; } = default!;
+        public bool isTrust { get; set; } = default!;
     }
 }

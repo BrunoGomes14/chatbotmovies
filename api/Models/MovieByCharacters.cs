@@ -2,9 +2,9 @@
 {
     public class MovieByCharacters
     {
-        public int Genre { get; set; }
-        public int WithWatchProvider { get; set; }
-        public int People { get; set; }
-        public int WithCompany { get; set; }
+        public int Genre { get; set; } = default!;
+        public int WithWatchProvider { get; set; } = default!;
+        public int People { get; set; } = default!;
+        public int WithCompany { get; set; } = default!;
     }
 }

@@ -11,14 +11,14 @@ namespace api.Models.Db
     {
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public int Id { get; set; } = default!;
         [Column("peopleId", TypeName = "text")]
         public string PeopleId { get; set; } = null!;
         [Column("movieId")]
-        public long MovieId { get; set; }
+        public long MovieId { get; set; } = default!;
         [Column("watched", TypeName = "bit(1)")]
-        public ulong Watched { get; set; }
+        public ulong Watched { get; set; } = default!;
         [Column("createdAt", TypeName = "datetime")]
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = default!;
     }
 }

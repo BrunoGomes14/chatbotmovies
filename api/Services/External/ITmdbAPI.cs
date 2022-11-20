@@ -17,5 +17,8 @@ namespace api.Services.External
         [Get("/movie/{id}/watch/providers?api_key={key}")]
         public Task<TmdbStream> GetMovieStream(int id, string key);
 
+        [Get("/movie/popular?api_key={key}&language=pt-BR")]
+        public Task<TbmdbSearchResult> GetPopularMovie(string key);
+
     }
 }

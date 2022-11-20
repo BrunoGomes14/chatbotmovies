@@ -22,7 +22,7 @@ namespace api.Services
 
 
             // trocar null por instancia do client
-            _sendMessage.Setup(null);
+            //_sendMessage.Setup(null);
         }
 
         public async Task onMessage()

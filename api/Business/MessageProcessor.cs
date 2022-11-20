@@ -14,8 +14,8 @@ namespace api.Business
         private readonly GetNearestTheater _getNearestTheater;
         private readonly GetMoviesInfo _getMoviesInfo;
 
-        private Message _message;
-        private ISendMessage _sendMessage;
+        private Message _message = new();
+        private ISendMessage _sendMessage = default!;
         private Plataform _plataform;
 
         public MessageProcessor(
@@ -47,6 +47,8 @@ namespace api.Business
             {
                 if (peopleStatus == PeopleStatus.InitConversation || peopleStatus == PeopleStatus.RestartConversation)
                     await InitConversation(peopleStatus);
+                else if (peopleStatus == PeopleStatus.Processing)
+                    return;
                 else
                     await ContinueConversation(peopleStatus);
             }
@@ -120,6 +122,9 @@ namespace api.Business
                 case PeopleStatus.WaitingChoseFunctionAfterMovie:
                     DetectDecisionAndContinueAfterMovie();
                     break;
+                case PeopleStatus.WaitingConfirmSortMovie:
+                    (content, uri) = await VerifyAnswerSort();
+                    break;
                 default:
                     await VerifyHowProcede();
                     break;
@@ -138,7 +143,10 @@ namespace api.Business
                 case 0: // ENCONTRAR FILME
                     await _database.UpdateStatus(_message.Id, PeopleStatus.WaintingWriteMovieToFind);
                     return Messages.SearchMovie;
-                case 1: // LOCALIZAR CINEMA
+                case 1: // SORTEAR FILME
+                    await _database.UpdateStatus(_message.Id, PeopleStatus.WaitingConfirmSortMovie);
+                    return Messages.SortMovie;
+                case 2: // LOCALIZAR CINEMA
                     await _database.UpdateStatus(_message.Id, PeopleStatus.WaitingSendLocation);
                     return Messages.SendLocation;
                 default:
@@ -200,12 +208,40 @@ namespace api.Business
 
             switch (result)
             {
-                case 1:
-                    break;
                 default:
                     AnyTimeDecision(result);
                     break;
             }
+        }
+
+        private async Task<(string, Uri)> VerifyAnswerSort()
+        {
+            (string, Uri) tuple = (string.Empty, default!);
+
+            var result = _translator.ToListOption(TranslationOptions.ChooseFuncOptionsSortMovie());
+            switch (result)
+            {
+                case 0:
+                    tuple = await SortMovie();
+                    break;
+                default:
+                    await AnyTimeDecision(result);
+                    break;
+            }
+
+            return tuple;
+        }
+
+        private async Task<(string, Uri)> SortMovie()
+        {
+            var result = await _getMoviesInfo.GetSortedMovie();
+            var formatted = _getMoviesInfo.FormatResult(result);
+            var banner = $"https://image.tmdb.org/t/p/original{result.movie.poster_path}";
+
+            await _database.UpdateStatus(_message.Id, PeopleStatus.WaitingChoseFunctionAfterMovie);
+            await _database.InsertResult(_message.Id, result.ToJson(), (int)PeopleStatus.WaintingWriteMovieToFind);
+
+            return (formatted, new Uri(banner));
         }
 
         private Task AnyTimeDecision(int decision) => decision switch 

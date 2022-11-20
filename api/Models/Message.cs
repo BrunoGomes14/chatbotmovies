@@ -5,7 +5,7 @@ namespace api.Models
         public string? Content { get; set; } = "";
         public string Id { get; set; } = "";
         public string UserName { get; set; } = "";
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
+        public decimal Latitude { get; set; } = default!;
+        public decimal Longitude { get; set; } = default!;
     }
 }

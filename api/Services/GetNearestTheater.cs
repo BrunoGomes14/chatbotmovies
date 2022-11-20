@@ -43,7 +43,7 @@ namespace api.Services
                 new NearestTheaterResult("Infelizmente, não consegui encontrar cinemas na sua cidade 😢", false);
             }
             
-            var theaters = await _ingressosAPI.GetCityTheaters(ingressoCity.id);
+            var theaters = await _ingressosAPI.GetCityTheaters(ingressoCity!.id);
             var theatersFiltred = theaters.items.Where(x => x.geolocation.lng != 0
                                                          && x.enabled);
             

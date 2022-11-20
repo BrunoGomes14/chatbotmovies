@@ -33,11 +33,17 @@ namespace api.Services
 
             builder.Services
                 .AddRefitClient<IIngressosAPI>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api-content.ingresso.com/v0"));
+                .ConfigureHttpClient(c => {
+                    c.BaseAddress = new Uri("https://api-content.ingresso.com/v0");
+                    c.Timeout = TimeSpan.FromSeconds(10);
+                });
 
             builder.Services
                 .AddRefitClient<ITmdbAPI>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api.themoviedb.org/3"));
+                .ConfigureHttpClient(c => {
+                    c.BaseAddress = new Uri("https://api.themoviedb.org/3");
+                    c.Timeout = TimeSpan.FromSeconds(10);
+                });
         }
     }
 }

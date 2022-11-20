@@ -2,8 +2,8 @@
 {
     public class TelegramSendMessage : ISendMessage
     {
-        private readonly Stack<(string, string, Uri?)> AfterMessages;
-        private object _client;
+        private readonly Stack<(string, string, Uri?)> AfterMessages = default!;
+        private object _client = default!;
 
         public void Setup(object client)
         {

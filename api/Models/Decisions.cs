@@ -2,7 +2,7 @@
 {
     public class Decisions
     {
-        public int DecisionType { get; set; }
-        public string DecisionsModel { get; set; }
+        public int DecisionType { get; set; } = default!;
+        public string DecisionsModel { get; set; } = default!;
     }
 }

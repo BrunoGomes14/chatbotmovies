@@ -2,9 +2,9 @@
 {
     public class MovieToSend
     {
-        public string Name { get; set; }
-        public string StreamAvailable { get; set; }
-        public string Overview { get; set; }
-        public string UrlBackdrop { get; set; }
+        public string Name { get; set; } = default!;
+        public string StreamAvailable { get; set; } = default!;
+        public string Overview { get; set; } = default!;
+        public string UrlBackdrop { get; set; } = default!;
     }
 }

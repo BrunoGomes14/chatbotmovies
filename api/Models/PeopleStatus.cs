@@ -14,6 +14,7 @@ namespace api.Models
         FinishedForRestart = 8,
         FinishedByUser = 9,
         RestartConversation = 10,
-        WaitingChoseFunctionAfterMovie = 11
+        WaitingChoseFunctionAfterMovie = 11,
+        WaitingConfirmSortMovie = 12
     }
 }

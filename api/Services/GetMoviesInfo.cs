@@ -43,7 +43,6 @@ namespace api.Services
         public async Task<TmdbMovieResult> GetMovie(int id, bool isTrust = true)
         {
             var movie = await _tmbdbAPI.GetMovieDetail(id, _apiKey);
-            var genres = await _tmbdbAPI.GetGenres(_apiKey);
             var stream = await _tmbdbAPI.GetMovieStream(id, _apiKey);
 
             return new TmdbMovieResult
@@ -52,6 +51,19 @@ namespace api.Services
                 stream = stream,
                 isTrust = isTrust
             };
+        }
+        
+        public async Task<TmdbMovieResult> GetSortedMovie()
+        {
+            var result = await _tmbdbAPI.GetPopularMovie(_apiKey);
+            if (result.total_results == 0)
+                throw new NotUnderstandException("Infelizmente essa função está indisponível no momento. Tente outra.");
+
+
+            var sort = Random.Shared.Next(0, result.results.Count() - 1);
+            int id = result.results[sort].id;
+
+            return await GetMovie(id);
         }
 
         public string FormatResult(TmdbMovieResult result)

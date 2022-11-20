@@ -6,7 +6,7 @@ namespace api.Services
         { 
             get
             { 
-                return $"Olá {{0}} 😃\n\nEu sou a Bovie!\nSou especialista em filmes e to sempre por dentro do mundo dos cinemas!\n\nQuer saber alguma coisa? Agora, tenho essas opções aqui:\n\n{Options}\n\nE aí o que vai ser?";
+                return $"Olá {{0}} 😃\n\nEu sou a Bovie! O seu bot de movies.\nSou especialista em filmes e to sempre por dentro do mundo dos cinemas!\n\nQuer saber alguma coisa? Agora, tenho essas opções aqui:\n\n{Options}\n\nE aí o que vai ser?";
             }  
         }
 
@@ -14,7 +14,7 @@ namespace api.Services
         {
             get
             {
-                return $"Olá {{0}} 😃\n\nQuem bom te encontrar aqui de novo!\n Com o que quer que eu te ajude?\n\n{Options}";
+                return $"Olá {{0}} 😃\n\nQuem bom te encontrar aqui de novo!\nComo posso te ajudar?\n\n{Options}";
             }
         }
 
@@ -22,7 +22,7 @@ namespace api.Services
         {
             get
             {
-                return "*1.* Encontrar filmes.\n*2.* Descobrir o que tá em cartaz do cinema mais próximo a você!";
+                return "*1.* Encontrar filmes.\n*2.* Sortear um filme.\n*3.* Descobrir o que tá em cartaz do cinema mais próximo a você!";
             }
         }
 
@@ -57,7 +57,7 @@ namespace api.Services
                 return "Beleza! Vou procurar aqui, deixa comigo.🧐🔎";
             }
         }
-        
+ 
         public static string NotUnderstandLocation
         {
             get
@@ -104,6 +104,14 @@ namespace api.Services
             get
             {
                 return "Poxa, tudo bem 🙁. Te espero aqui caso precise.";
+            }
+        }
+
+        public static string SortMovie
+        {
+            get
+            {
+                return "Essa funciona assim:\nIrei buscar os filmes que as pessoas mais estão comentando no momento e sortear um para você conhecer!\n Vamos nessa?\n\n*1.* Sim\n*2.* Não, trocar função";
             }
         }
     }

@@ -2,58 +2,58 @@
 {
     public class Genre
     {
-        public int id { get; set; }
-        public string name { get; set; }
+        public int id { get; set; } = default!;
+        public string name { get; set; } = default!;
     }
 
     public class ProductionCompany
     {
-        public int id { get; set; }
-        public string logo_path { get; set; }
-        public string name { get; set; }
-        public string origin_country { get; set; }
+        public int id { get; set; } = default!;
+        public string logo_path { get; set; } = default!;
+        public string name { get; set; } = default!;
+        public string origin_country { get; set; } = default!;
     }
 
     public class ProductionCountry
     {
-        public string iso_3166_1 { get; set; }
-        public string name { get; set; }
+        public string iso_3166_1 { get; set; } = default!;
+        public string name { get; set; } = default!;
     }
 
     public class TmdbMovie
     {
-        public bool adult { get; set; }
-        public string backdrop_path { get; set; }
-        public object belongs_to_collection { get; set; }
-        public int budget { get; set; }
-        public List<Genre> genres { get; set; }
-        public string homepage { get; set; }
-        public int id { get; set; }
-        public string imdb_id { get; set; }
-        public string original_language { get; set; }
-        public string original_title { get; set; }
-        public string overview { get; set; }
-        public double popularity { get; set; }
-        public string poster_path { get; set; }
-        public List<ProductionCompany> production_companies { get; set; }
-        public List<ProductionCountry> production_countries { get; set; }
-        public DateTime release_date { get; set; }
-        public int revenue { get; set; }
-        public int runtime { get; set; }
-        public List<SpokenLanguage> spoken_languages { get; set; }
-        public string status { get; set; }
-        public string tagline { get; set; }
-        public string title { get; set; }
-        public bool video { get; set; }
-        public double vote_average { get; set; }
-        public int vote_count { get; set; }
+        public bool adult { get; set; } = default!;
+        public string backdrop_path { get; set; } = default!;
+        public object belongs_to_collection { get; set; } = default!;
+        public int budget { get; set; } = default!;
+        public List<Genre> genres { get; set; } = default!;
+        public string homepage { get; set; } = default!;
+        public int id { get; set; } = default!;
+        public string imdb_id { get; set; } = default!;
+        public string original_language { get; set; } = default!;
+        public string original_title { get; set; } = default!;
+        public string overview { get; set; } = default!;
+        public double popularity { get; set; } = default!;
+        public string poster_path { get; set; } = default!;
+        public List<ProductionCompany> production_companies { get; set; } = default!;
+        public List<ProductionCountry> production_countries { get; set; } = default!;
+        public DateTime release_date { get; set; } = default!;
+        public int revenue { get; set; } = default!;
+        public int runtime { get; set; } = default!;
+        public List<SpokenLanguage> spoken_languages { get; set; } = default!;
+        public string status { get; set; } = default!;
+        public string tagline { get; set; } = default!;
+        public string title { get; set; } = default!;
+        public bool video { get; set; } = default!;
+        public double vote_average { get; set; } = default!;
+        public int vote_count { get; set; } = default!;
     }
 
     public class SpokenLanguage
     {
-        public string english_name { get; set; }
-        public string iso_639_1 { get; set; }
-        public string name { get; set; }
+        public string english_name { get; set; } = default!;
+        public string iso_639_1 { get; set; } = default!;
+        public string name { get; set; } = default!;
     }
 
 

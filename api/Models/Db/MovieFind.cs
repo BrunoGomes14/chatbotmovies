@@ -12,15 +12,15 @@ namespace api.Models.Db
     {
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public int Id { get; set; } = default!;
         [Column("conversationId")]
-        public int ConversationId { get; set; }
+        public int ConversationId { get; set; } = default!;
         [Column("movieToSearchReceived")]
-        public int? MovieToSearchReceived { get; set; }
+        public int? MovieToSearchReceived { get; set; } = default!;
         [Column("triesResults", TypeName = "text")]
-        public string? TriesResults { get; set; }
+        public string? TriesResults { get; set; } = default!;
         [Column("result", TypeName = "text")]
-        public string? Result { get; set; }
+        public string? Result { get; set; } = default!;
 
         [ForeignKey("ConversationId")]
         [InverseProperty("MovieFinds")]

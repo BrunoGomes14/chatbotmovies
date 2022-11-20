@@ -2,7 +2,7 @@
 {
     public class NotUnderstandException : System.Exception
     {
-        public string? Reason { get; set; }
+        public string? Reason { get; set; } = default!;
 
         public NotUnderstandException(string? reason = null)
         {

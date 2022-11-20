@@ -8,8 +8,8 @@ public class WhatsappMessage
     public string MessageSid { get; set; } = "";
     public string AccountSid { get; set; } = "";
     public string From { get; set; } = "";
-    public string? Body { get; set; }   
-    public string? Latitude { get; set; }
-    public string? Longitude { get; set; }  
-    public int NumMedia { get; set; }
+    public string? Body { get; set; } = default!;   
+    public string? Latitude { get; set; } = default!;
+    public string? Longitude { get; set; } = default!;  
+    public int NumMedia { get; set; } = default!;
 }
