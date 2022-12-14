@@ -27,6 +27,15 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "DevelopmentBruno"
       }
+    },
+    "api - Heroku": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5202",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      }
     }
   }
 }

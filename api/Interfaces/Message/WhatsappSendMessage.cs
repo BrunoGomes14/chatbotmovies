@@ -51,8 +51,6 @@ namespace api.Interfaces.Message
             string body,
             Uri? uri)
         {
-            Console.WriteLine($"mandando: {body.Substring(0, 30)}...");
-
             var uris = new List<Uri>();
             if (uri != null)
                 uris.Add(uri);

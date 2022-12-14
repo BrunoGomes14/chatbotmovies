@@ -3,7 +3,6 @@ using api.Interfaces.Data;
 using api.Models;
 using api.Models.Exception;
 using api.Services;
-using System.Text;
 
 namespace api.Business
 {
@@ -70,7 +69,7 @@ namespace api.Business
 
             if (conversation != null)
             {
-                var time = DateTime.Now - conversation.LastReceive;
+                var time = DateTime.UtcNow.AddHours(-3) - conversation.LastReceive;
                 if (time.TotalMinutes > 10)
                 {
                     await _database.UpdateStatus(conversation.PeopleId, PeopleStatus.FinishedByApplication);
@@ -113,14 +112,11 @@ namespace api.Business
                 case PeopleStatus.WaintingWriteMovieToFind:
                     (content, uri) = await FindMovie();
                     break;
-                case PeopleStatus.WaitingAnswerQuestion:
-                    //await ContinueDiscover();
-                    break;
                 case PeopleStatus.WaitingSendLocation:
                     (content, _) = await FindLocation();
                     break;
                 case PeopleStatus.WaitingChoseFunctionAfterMovie:
-                    DetectDecisionAndContinueAfterMovie();
+                    content = await DetectDecisionAndContinueAfterMovie();
                     break;
                 case PeopleStatus.WaitingConfirmSortMovie:
                     (content, uri) = await VerifyAnswerSort();
@@ -172,6 +168,8 @@ namespace api.Business
             await _database.UpdateStatus(_message.Id, PeopleStatus.WaitingChoseFunctionAfterMovie);
             await _database.InsertResult(_message.Id, result.ToJson(), (int)PeopleStatus.WaintingWriteMovieToFind);
 
+            _sendMessage.SendAfter(_message.Id, Messages.AfterMovieDecicions);
+
             return (formatted, new Uri(banner));
         }
 
@@ -197,21 +195,29 @@ namespace api.Business
             _sendMessage.SendAfter(_message.Id, Messages.MeetMovie);
             await _database.UpdateStatus(_message.Id, PeopleStatus.WaintingWriteMovieToFind);
 
-
             return (formatted, new Uri(theaterResult.Theater.images.First(x => x.type.ToLower() == "logo").url));
         }
 
 
-        private void DetectDecisionAndContinueAfterMovie()
+        private async Task<string> DetectDecisionAndContinueAfterMovie()
         {
             var result = _translator.ToListOption(TranslationOptions.ChooseFuncOptionsAfterMovie(), true);
 
             switch (result)
             {
+                case 0:
+                    await _database.UpdateStatus(_message.Id, PeopleStatus.WaintingWriteMovieToFind);
+                    return Messages.SearchMovie;
+                case 1:
+                    await _database.UpdateStatus(_message.Id, PeopleStatus.WaitingChoseFunction);
+                    await InitConversation(PeopleStatus.RestartConversation);
+                    break;
                 default:
-                    AnyTimeDecision(result);
+                    await AnyTimeDecision(result);
                     break;
             }
+
+            return string.Empty;
         }
 
         private async Task<(string, Uri)> VerifyAnswerSort()
@@ -223,6 +229,10 @@ namespace api.Business
             {
                 case 0:
                     tuple = await SortMovie();
+                    break;
+                case 1:
+                    await _database.UpdateStatus(_message.Id, PeopleStatus.WaitingChoseFunction);
+                    await InitConversation(PeopleStatus.RestartConversation);
                     break;
                 default:
                     await AnyTimeDecision(result);
@@ -237,9 +247,11 @@ namespace api.Business
             var result = await _getMoviesInfo.GetSortedMovie();
             var formatted = _getMoviesInfo.FormatResult(result);
             var banner = $"https://image.tmdb.org/t/p/original{result.movie.poster_path}";
-
+           
             await _database.UpdateStatus(_message.Id, PeopleStatus.WaitingChoseFunctionAfterMovie);
             await _database.InsertResult(_message.Id, result.ToJson(), (int)PeopleStatus.WaintingWriteMovieToFind);
+
+            _sendMessage.SendAfter(_message.Id, Messages.AfterMovieDecicions);
 
             return (formatted, new Uri(banner));
         }

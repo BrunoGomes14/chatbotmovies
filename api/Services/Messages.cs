@@ -46,7 +46,7 @@ namespace api.Services
         {
             get
             {
-                return "Me manda sua localização? Sem ser em tempo real viu? 📍\n\n*Ah caso não queira, você pode mandar seu CEP que já serve!";
+                return "Me manda sua localização? Sem ser em tempo real viu? 📍\n\nAh caso não queira, você pode mandar seu CEP que já serve!";
             }
         }
 
@@ -112,6 +112,14 @@ namespace api.Services
             get
             {
                 return "Essa funciona assim:\nIrei buscar os filmes que as pessoas mais estão comentando no momento e sortear um para você conhecer!\n Vamos nessa?\n\n*1.* Sim\n*2.* Não, trocar função";
+            }
+        }
+
+        public static string AfterMovieDecicions
+        {
+            get
+            {
+                return "O que deseja agora?\n\n*1.* Procurar outro filme.\n*2.* Escolher outra função.";
             }
         }
     }

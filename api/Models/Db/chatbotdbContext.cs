@@ -7,13 +7,16 @@ namespace api.Models.Db
 {
     public partial class chatbotdbContext : DbContext
     {
-        public chatbotdbContext()
+        private readonly string _connString;
+        public chatbotdbContext(AppSettings config)
         {
+            _connString = config.MysqlConn;
         }
 
         public chatbotdbContext(DbContextOptions<chatbotdbContext> options)
             : base(options)
         {
+            _connString = "";
         }
 
         public virtual DbSet<Conversation> Conversations { get; set; } = null!;
@@ -26,7 +29,7 @@ namespace api.Models.Db
         {
             if (!optionsBuilder.IsConfigured)
             {
-               optionsBuilder.UseMySql("server=localhost;user=root;password=root123;database=chatbotdb", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.28-mysql"));
+                optionsBuilder.UseMySql(_connString, ServerVersion.Parse("8.0.28-mysql"));
             }
         }
 

@@ -13,7 +13,6 @@ builder.Services.AddSwaggerGen();
 builder.ConfigureServices();
     
 var app = builder.Build();
-
 app.Services.GetService<TelegramConfiguration>()!
             .Setup();
 
@@ -22,6 +21,10 @@ if (app.Environment.IsDevelopment() || app.Environment.IsBrunoDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    new ThreadKeepAlive();
 }
 
 app.UseHttpsRedirection();

@@ -25,7 +25,7 @@
         public bool adult { get; set; } = default!;
         public string backdrop_path { get; set; } = default!;
         public object belongs_to_collection { get; set; } = default!;
-        public int budget { get; set; } = default!;
+        public long budget { get; set; } = default!;
         public List<Genre> genres { get; set; } = default!;
         public string homepage { get; set; } = default!;
         public int id { get; set; } = default!;
@@ -38,7 +38,7 @@
         public List<ProductionCompany> production_companies { get; set; } = default!;
         public List<ProductionCountry> production_countries { get; set; } = default!;
         public DateTime release_date { get; set; } = default!;
-        public int revenue { get; set; } = default!;
+        public long revenue { get; set; } = default!;
         public int runtime { get; set; } = default!;
         public List<SpokenLanguage> spoken_languages { get; set; } = default!;
         public string status { get; set; } = default!;

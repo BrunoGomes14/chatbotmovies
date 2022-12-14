@@ -7,9 +7,9 @@ namespace api.Interfaces.Data
     {
         private readonly chatbotdbContext db;
 
-        public ChatMySqlDatabase()
+        public ChatMySqlDatabase(AppSettings config)
         {
-            db = new chatbotdbContext();
+            db = new chatbotdbContext(config);
         }
 
         public async Task AddStatus(string id, PeopleStatus status, Plataform plataform)

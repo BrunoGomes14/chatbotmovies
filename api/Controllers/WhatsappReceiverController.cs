@@ -12,19 +12,13 @@ public class WhatsappReceiverController : ControllerBase
 {
     private readonly WhatsappSendMessage _sendmessage;
     private readonly MessageProcessor _messageProcessor;
-    private readonly GetNearestTheater getNearestTheater;
-    private GetMoviesInfo getMoviesInfo;
 
     public WhatsappReceiverController(
         MessageProcessor messageProcessor,
-        GetNearestTheater getNearestTheater,
-        WhatsappSendMessage sendmessage,
-        GetMoviesInfo getMoviesInfo)
+        WhatsappSendMessage sendmessage)
     {
         _sendmessage = sendmessage;
         _messageProcessor = messageProcessor;
-        this.getNearestTheater = getNearestTheater;
-        this.getMoviesInfo = getMoviesInfo;
     }
 
     [HttpPost]
@@ -42,17 +36,14 @@ public class WhatsappReceiverController : ControllerBase
             },
             Models.Plataform.WHATSAPP);
 
-        Console.WriteLine($"recebeu: {receive.Body}");
-
         await _messageProcessor.Process();
 
         return Ok();
     }
 
-    [HttpPost("test")]
-    public async Task<ActionResult> test()
+    [HttpGet("test")]
+    public ActionResult test()
     {
-        await getMoviesInfo.GetMovie(354912);
         return Ok();
     }
 
